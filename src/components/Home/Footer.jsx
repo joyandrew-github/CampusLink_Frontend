@@ -7,7 +7,7 @@ const Footer = () => {
         <div className="text-center">
           <div className="mb-12">
             <div className="flex items-center justify-center space-x-3 mb-6">
-              <img src="/public/logosece.png" alt="CampusLink Logo" className="h-15 w-12" />
+              <img src="https://res.cloudinary.com/duwvhcha4/image/upload/v1753507942/logosece_pj0sr9.png" alt="CampusLink Logo" className="h-20 w-18" />
               <div>
                 <h3 className="text-2xl font-bold text-white">CampusLink</h3>
                 <p className="text-sm text-gray-400">Sri Eshwar College of Engineering</p>

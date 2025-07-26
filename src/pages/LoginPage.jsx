@@ -64,14 +64,16 @@ const LoginPage = () => {
 
       <div className="relative z-10 w-full max-w-md">
         {/* Logo and App Name */}
-        <div className="text-center mb-8">
-          <div className="inline-flex items-center justify-center w-20 h-20 bg-gradient-to-r from-blue-600 to-indigo-700 rounded-2xl mb-4 shadow-lg">
-            <BookOpen size={32} className="text-white" />
+<div className="text-center mb-8">
+          <div className="flex items-center justify-center space-x-3">
+            <img src="https://res.cloudinary.com/duwvhcha4/image/upload/v1753507942/logosece_pj0sr9.png" alt="CampusLink Logo" className="h-20 w-18" />
+            <div>
+              <h1 className="text-4xl font-bold bg-gradient-to-r from-blue-600 to-indigo-600 bg-clip-text text-transparent">
+                CampusLink
+              </h1>
+              <p className="text-gray-600 mt-2 text-lg">Your Student Utility Hub</p>
+            </div>
           </div>
-          <h1 className="text-4xl font-bold bg-gradient-to-r from-blue-600 via-blue-700 to-indigo-700 bg-clip-text text-transparent">
-            CampusLink
-          </h1>
-          <p className="text-gray-600 mt-2 text-lg">Your Student Utility Hub</p>
         </div>
 
         {/* Login Form */}

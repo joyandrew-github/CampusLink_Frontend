@@ -64,14 +64,12 @@ const Sidebar = ({ activeSection, setActiveSection, sidebarOpen, setSidebarOpen,
       {/* Sidebar Header */}
       <div className="flex items-center justify-between p-6 border-b border-gray-200">
         <div className="flex items-center space-x-3">
-          <div className="w-10 h-10 bg-gradient-to-r from-blue-600 to-indigo-700 rounded-lg flex items-center justify-center">
-            <span className="text-white font-bold text-lg">CL</span>
+            <img src="https://res.cloudinary.com/duwvhcha4/image/upload/v1753507942/logosece_pj0sr9.png" alt="CampusLink Logo" className="h-18 w-15" />
+            <div>
+              <h1 className="text-xl font-bold text-gray-900">CampusLink</h1>
+              <p className="text-xs text-gray-600">Sri Eshwar College of Engineering</p>
+            </div>
           </div>
-          <div>
-            <h1 className="text-xl font-bold text-gray-800">CampusLink</h1>
-            <p className="text-sm text-gray-500">Student Hub</p>
-          </div>
-        </div>
         <button
           onClick={() => setSidebarOpen(false)}
           className="lg:hidden text-gray-500 hover:text-gray-700"

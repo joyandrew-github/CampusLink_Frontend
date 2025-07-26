@@ -28,7 +28,7 @@ const Sidebar = ({ activeSection, setActiveSection, sidebarOpen, setSidebarOpen,
       >
         <div className="flex items-center justify-between h-20 px-6 border-b border-gray-200">
           <div className="flex items-center space-x-3">
-            <img src="/public/logosece.png" alt="CampusLink Logo" className="h-15 w-12" />
+            <img src="https://res.cloudinary.com/duwvhcha4/image/upload/v1753507942/logosece_pj0sr9.png" alt="CampusLink Logo" className="h-18 w-15" />
             <div>
               <h1 className="text-xl font-bold text-gray-900">CampusLink</h1>
               <p className="text-xs text-gray-600">Sri Eshwar College of Engineering</p>

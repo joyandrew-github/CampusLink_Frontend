@@ -13,7 +13,6 @@ import Hero from '../components/Home/HeroSection';
 import Features from '../components/Home/Features';
 import Announcements from '../components/Home/Announcements';
 import Footer from '../components/Home/Footer';
-import ChatBot from '../components/Home/ChatBot';
 
 
 const Homepage = () => {
@@ -73,8 +72,8 @@ const Homepage = () => {
       <Announcements />
       <Footer />
       
-      {/* Floating Chatbot */}
-      <ChatBot />
+      
+      
     </div>
   );
 };

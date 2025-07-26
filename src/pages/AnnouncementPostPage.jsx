@@ -52,14 +52,19 @@ const AnnouncementPostPage = () => {
           id: post._id,
           category: post.category,
           title: post.title,
-          content: post.description || '', // Map description to content
-          date: post.createdAt || post.date || new Date().toISOString(), // Fallback to createdAt or current date
-          displayDate: formatDistanceToNow(new Date(post.createdAt || post.date), { addSuffix: true }),
-          location: post.venue || '', // Map venue to location
+          description: post.description || '', // Use description as per schema
+          createdAt: post.createdAt || new Date().toISOString(),
+          updatedAt: post.updatedAt || post.createdAt || new Date().toISOString(),
+          displayDate: formatDistanceToNow(new Date(post.createdAt), { addSuffix: true }),
+          location: post.venue || '', // Use venue as per schema
           time: post.time || '',
+          startTime: post.startTime || '',
+          endTime: post.endTime || '',
           participants: post.participants || '',
           image: post.image || '',
-          icon: getIconFromCategory(post.category), // Map category to icon
+          postedBy: post.postedBy?.name || 'Unknown',
+          registerLink: post.registerLink || '',
+          icon: getIconFromCategory(post.category),
           color: getCategoryColor(post.category),
           textColor: getTextColorFromCategory(post.category),
         })));
@@ -103,7 +108,7 @@ const AnnouncementPostPage = () => {
   };
 
   const setQuickDateFilter = (filter) => {
-    const today = new Date('2025-07-26T09:11:00+05:30'); // 09:11 AM IST, July 26, 2025
+    const today = new Date('2025-07-26T10:02:00+05:30'); // 10:02 AM IST, July 26, 2025
     const todayStr = today.toISOString().split('T')[0];
     
     switch(filter) {
@@ -137,10 +142,10 @@ const AnnouncementPostPage = () => {
 
   const filteredPosts = posts.filter(post => {
     const categoryMatch = activeCategory === 'All' || post.category === activeCategory;
-    const dateMatch = isDateInRange(post.date, startDate, endDate);
+    const dateMatch = isDateInRange(post.createdAt, startDate, endDate); // Use createdAt for filtering
     const searchMatch = !searchQuery || 
       post.title.toLowerCase().includes(searchQuery.toLowerCase()) ||
-      post.content.toLowerCase().includes(searchQuery.toLowerCase());
+      post.description.toLowerCase().includes(searchQuery.toLowerCase()); // Use description
     return categoryMatch && dateMatch && searchMatch;
   });
 
@@ -298,7 +303,7 @@ const AnnouncementPostPage = () => {
               )}
             </div>
             <div className="text-sm text-gray-500">
-              Last updated: {new Date('2025-07-26T09:11:00+05:30').toLocaleTimeString()}
+              Last updated: {new Date('2025-07-26T10:02:00+05:30').toLocaleTimeString()}
             </div>
           </div>
         </div>
@@ -354,7 +359,7 @@ const AnnouncementPostPage = () => {
                   <div className="p-6">
                     {/* Header */}
                     <div className="mb-4">
-                      <div className="text-sm text-gray-500 mb-2" title={formatFullDate(post.date)}>
+                      <div className="text-sm text-gray-500 mb-2" title={formatFullDate(post.createdAt)}>
                         {post.displayDate}
                       </div>
                     </div>
@@ -364,12 +369,18 @@ const AnnouncementPostPage = () => {
                       {post.title}
                     </h3>
                     <p className="text-gray-600 leading-relaxed mb-4">
-                      {post.content}
+                      {post.description}
                     </p>
 
                     {/* Details */}
                     <div className="space-y-2 mb-4">
-                      {post.time && (
+                      {(post.startTime || post.endTime) && (
+                        <div className="flex items-center space-x-2 text-sm text-gray-600">
+                          <Clock className="h-4 w-4" />
+                          <span>{post.startTime && post.endTime ? `${post.startTime} - ${post.endTime}` : post.startTime || post.endTime || post.time}</span>
+                        </div>
+                      )}
+                      {post.time && !post.startTime && !post.endTime && (
                         <div className="flex items-center space-x-2 text-sm text-gray-600">
                           <Clock className="h-4 w-4" />
                           <span>{post.time}</span>
@@ -387,14 +398,20 @@ const AnnouncementPostPage = () => {
                           <span>{post.participants}</span>
                         </div>
                       )}
+                      {post.postedBy && (
+                        <div className="flex items-center space-x-2 text-sm text-gray-600">
+                          <Users className="h-4 w-4" />
+                          <span>Posted by: {post.postedBy}</span>
+                        </div>
+                      )}
                     </div>
 
                     {/* Register Button for Events */}
-                    {post.category === 'Events' && (
+                    {post.category === 'Events' && post.registerLink && (
                       <div className="pt-4 border-t border-gray-100">
-                        <button className="w-full bg-gradient-to-r from-blue-600 to-blue-700 text-white px-4 py-2 rounded-lg font-semibold hover:from-blue-700 hover:to-blue-800 transition-all">
+                        <a href={post.registerLink} target="_blank" rel="noopener noreferrer" className="w-full bg-gradient-to-r from-blue-600 to-blue-700 text-white px-4 py-2 rounded-lg font-semibold hover:from-blue-700 hover:to-blue-800 transition-all block text-center">
                           Register Now
-                        </button>
+                        </a>
                       </div>
                     )}
                   </div>
@@ -410,7 +427,7 @@ const AnnouncementPostPage = () => {
                 <div key={post.id} className="bg-white rounded-xl shadow-sm border border-gray-200 hover:shadow-lg transition-all duration-300 overflow-hidden">
                   {/* Post Header */}
                   <div className="p-4 flex items-center justify-between">
-                    <p className="text-xs text-gray-500" title={formatFullDate(post.date)}>
+                    <p className="text-xs text-gray-500" title={formatFullDate(post.createdAt)}>
                       {post.displayDate}
                     </p>
                     <div className="flex items-center space-x-2">
@@ -423,7 +440,7 @@ const AnnouncementPostPage = () => {
                   {/* Post Content */}
                   <div className="px-4">
                     <h3 className="text-lg font-semibold text-gray-900 mb-2">{post.title}</h3>
-                    <p className="text-gray-700 leading-relaxed">{post.content}</p>
+                    <p className="text-gray-700 leading-relaxed">{post.description}</p>
                   </div>
 
                   {/* Post Image */}
@@ -440,7 +457,13 @@ const AnnouncementPostPage = () => {
                   {/* Post Details */}
                   <div className="px-4 mt-3 pb-2">
                     <div className="flex flex-wrap gap-4 text-sm text-gray-600">
-                      {post.time && (
+                      {(post.startTime || post.endTime) && (
+                        <div className="flex items-center space-x-1">
+                          <Clock className="h-4 w-4" />
+                          <span>{post.startTime && post.endTime ? `${post.startTime} - ${post.endTime}` : post.startTime || post.endTime || post.time}</span>
+                        </div>
+                      )}
+                      {post.time && !post.startTime && !post.endTime && (
                         <div className="flex items-center space-x-1">
                           <Clock className="h-4 w-4" />
                           <span>{post.time}</span>
@@ -458,16 +481,22 @@ const AnnouncementPostPage = () => {
                           <span>{post.participants}</span>
                         </div>
                       )}
+                      {post.postedBy && (
+                        <div className="flex items-center space-x-1">
+                          <Users className="h-4 w-4" />
+                          <span>Posted by: {post.postedBy}</span>
+                        </div>
+                      )}
                     </div>
                   </div>
 
                   {/* Register Button for Events */}
-                  {post.category === 'Events' && (
+                  {post.category === 'Events' && post.registerLink && (
                     <div className="px-4 py-3 border-t border-gray-100">
                       <div className="flex justify-end">
-                        <button className="bg-blue-600 text-white px-4 py-2 rounded-lg text-sm font-medium hover:bg-blue-700 transition-colors">
+                        <a href={post.registerLink} target="_blank" rel="noopener noreferrer" className="bg-blue-600 text-white px-4 py-2 rounded-lg text-sm font-medium hover:bg-blue-700 transition-colors">
                           Register Now
-                        </button>
+                        </a>
                       </div>
                     </div>
                   )}

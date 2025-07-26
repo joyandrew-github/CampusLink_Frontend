@@ -1,5 +1,6 @@
 import React, { useState } from 'react';
-import { Plus, Edit, Trash2, Calendar, MapPin, Clock, X, Link } from 'lucide-react';
+import { Plus, Edit, Trash2, Calendar, MapPin, Clock, X, Link, User } from 'lucide-react'; // Added User, removed Users if it was incorrectly included
+import { toast } from 'react-toastify';
 
 // Helper function to decode JWT token (client-side)
 const decodeToken = (token) => {
@@ -37,7 +38,7 @@ const AnnouncementsSection = ({
     e.preventDefault();
     const formData = new FormData();
     formData.append('title', announcementForm.title);
-    formData.append('description', announcementForm.content);
+    formData.append('description', announcementForm.description);
     formData.append('category', announcementForm.category);
     formData.append('venue', announcementForm.venue);
     formData.append('time', announcementForm.time); // Backward compatibility
@@ -108,13 +109,15 @@ const AnnouncementsSection = ({
       if (editingAnnouncement) {
         setAnnouncements(announcements.map((a) => (a._id === savedAnnouncement._id ? savedAnnouncement : a)));
         setEditingAnnouncement(null);
+        toast.success('Announcement updated successfully!');
       } else {
         setAnnouncements([savedAnnouncement, ...announcements]);
+        toast.success('Announcement created successfully!');
       }
 
       setAnnouncementForm({
         title: '',
-        content: '',
+        description: '',
         category: 'General',
         venue: '',
         time: '',
@@ -132,6 +135,7 @@ const AnnouncementsSection = ({
         status: err.status || 'unknown',
         editingAnnouncementId: editingAnnouncement?._id,
       });
+      toast.error(err.message);
     }
   };
 
@@ -141,15 +145,24 @@ const AnnouncementsSection = ({
       title: announcement.title,
       postedBy: announcement.postedBy,
     });
+    // Safely handle date formatting
+    let formattedDate = '';
+    if (announcement.date) {
+      const dateObj = new Date(announcement.date);
+      if (!isNaN(dateObj.getTime())) {
+        formattedDate = dateObj.toISOString().split('T')[0];
+      }
+    }
+
     setAnnouncementForm({
-      title: announcement.title,
-      content: announcement.description,
-      category: announcement.category,
+      title: announcement.title || '',
+      description: announcement.description || '',
+      category: announcement.category || 'General',
       venue: announcement.venue || '',
-      time: announcement.time || '', // Backward compatibility
+      time: announcement.time || '',
       startTime: announcement.startTime || '',
       endTime: announcement.endTime || '',
-      date: announcement.date ? new Date(announcement.date).toISOString().split('T')[0] : '', // Format for input type="date"
+      date: formattedDate,
       image: null,
       registerLink: announcement.registerLink || '',
     });
@@ -190,13 +203,21 @@ const AnnouncementsSection = ({
 
       setAnnouncements(announcements.filter((a) => a._id !== id));
       setError(null);
+      toast.success('Announcement deleted successfully!');
     } catch (err) {
       setError(err.message);
       console.error('Announcement delete error:', err.message, { id, status: err.status || 'unknown' });
+      toast.error(err.message);
     }
   };
 
   const showRegisterLink = ['Event', 'Hackathon', 'Internship'].includes(announcementForm.category);
+
+  // Validate announcements array
+  if (!Array.isArray(announcements)) {
+    console.error('Announcements prop is not an array:', announcements);
+    return <div>Error: Invalid announcements data</div>;
+  }
 
   return (
     <div>
@@ -209,7 +230,7 @@ const AnnouncementsSection = ({
           onClick={() => {
             setAnnouncementForm({
               title: '',
-              content: '',
+              description: '',
               category: 'General',
               venue: '',
               time: '',
@@ -270,7 +291,7 @@ const AnnouncementsSection = ({
                     setEditingAnnouncement(null);
                     setAnnouncementForm({
                       title: '',
-                      content: '',
+                      description: '',
                       category: 'General',
                       venue: '',
                       time: '',
@@ -301,10 +322,10 @@ const AnnouncementsSection = ({
                 </div>
 
                 <div>
-                  <label className="block text-sm font-medium text-gray-700 mb-1">Content</label>
+                  <label className="block text-sm font-medium text-gray-700 mb-1">Description</label>
                   <textarea
-                    value={announcementForm.content}
-                    onChange={(e) => setAnnouncementForm({ ...announcementForm, content: e.target.value })}
+                    value={announcementForm.description}
+                    onChange={(e) => setAnnouncementForm({ ...announcementForm, description: e.target.value })}
                     rows={4}
                     className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
                     required
@@ -372,8 +393,6 @@ const AnnouncementsSection = ({
                   </div>
                 </div>
 
-                
-
                 {showRegisterLink && (
                   <div>
                     <label className="block text-sm font-medium text-gray-700 mb-1">Register Link (Optional)</label>
@@ -423,84 +442,87 @@ const AnnouncementsSection = ({
       )}
 
       <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-        {announcements.map((announcement) => (
-          <div
-            key={announcement._id}
-            className="bg-white rounded-lg shadow-sm border border-gray-200 p-6 max-w-full w-full min-h-[300px]"
-          >
-            <div className="flex justify-between items-start mb-4">
-              <div className="flex-1">
-                <div className="flex items-center space-x-3 mb-2">
-                  <h3 className="text-lg font-semibold text-gray-900">{announcement.title}</h3>
-                  <span className="px-2 py-1 bg-gray-100 text-gray-800 rounded-full text-xs">
-                    {announcement.category}
-                  </span>
+        {announcements.map((announcement) => {
+          console.log('Rendering announcement:', announcement); // Debug log
+          return (
+            <div
+              key={announcement._id}
+              className="bg-white rounded-lg shadow-sm border border-gray-200 p-6 max-w-full w-full min-h-[300px]"
+            >
+              <div className="flex justify-between items-start mb-4">
+                <div className="flex-1">
+                  <div className="flex items-center space-x-3 mb-2">
+                    <h3 className="text-lg font-semibold text-gray-900">{announcement.title}</h3>
+                    <span className="px-2 py-1 bg-gray-100 text-gray-800 rounded-full text-xs">
+                      {announcement.category}
+                    </span>
+                  </div>
+                  <p className="text-gray-700 mb-3">{announcement.description}</p>
+                  <div className="flex flex-wrap gap-4 text-sm text-gray-600">
+                    <span className="flex items-center">
+                      <Calendar size={16} className="mr-1" />
+                      {announcement.date || formatDate(announcement.createdAt)}
+                    </span>
+                    {announcement.venue && (
+                      <span className="flex items-center">
+                        <MapPin size={16} className="mr-1" />
+                        {announcement.venue}
+                      </span>
+                    )}
+                    {(announcement.startTime || announcement.endTime) && (
+                      <span className="flex items-center">
+                        <Clock size={16} className="mr-1" />
+                        {announcement.startTime && announcement.endTime
+                          ? `${announcement.startTime} - ${announcement.endTime}`
+                          : announcement.startTime || announcement.endTime || announcement.time}
+                      </span>
+                    )}
+                    {announcement.time && !announcement.startTime && !announcement.endTime && (
+                      <span className="flex items-center">
+                        <Clock size={16} className="mr-1" />
+                        {announcement.time}
+                      </span>
+                    )}
+                    {announcement.registerLink && (
+                      <span className="flex items-center">
+                        <Link size={16} className="mr-1" />
+                        <a
+                          href={announcement.registerLink}
+                          target="_blank"
+                          rel="noopener noreferrer"
+                          className="text-blue-600 hover:underline"
+                        >
+                          Register
+                        </a>
+                      </span>
+                    )}
+                  </div>
                 </div>
-                <p className="text-gray-700 mb-3">{announcement.description}</p>
-                <div className="flex flex-wrap gap-4 text-sm text-gray-600">
-                  <span className="flex items-center">
-                    <Calendar size={16} className="mr-1" />
-                    {announcement.date || formatDate(announcement.createdAt)}
-                  </span>
-                  {announcement.venue && (
-                    <span className="flex items-center">
-                      <MapPin size={16} className="mr-1" />
-                      {announcement.venue}
-                    </span>
-                  )}
-                  {(announcement.startTime || announcement.endTime) && (
-                    <span className="flex items-center">
-                      <Clock size={16} className="mr-1" />
-                      {announcement.startTime && announcement.endTime
-                        ? `${announcement.startTime} - ${announcement.endTime}`
-                        : announcement.startTime || announcement.endTime || announcement.time}
-                    </span>
-                  )}
-                  {announcement.time && !announcement.startTime && !announcement.endTime && (
-                    <span className="flex items-center">
-                      <Clock size={16} className="mr-1" />
-                      {announcement.time}
-                    </span>
-                  )}
-                  {announcement.registerLink && (
-                    <span className="flex items-center">
-                      <Link size={16} className="mr-1" />
-                      <a
-                        href={announcement.registerLink}
-                        target="_blank"
-                        rel="noopener noreferrer"
-                        className="text-blue-600 hover:underline"
-                      >
-                        Register
-                      </a>
-                    </span>
-                  )}
+                <div className="flex space-x-2 ml-4">
+                  <button
+                    onClick={() => editAnnouncement(announcement)}
+                    className="p-2 text-blue-500 hover:bg-blue-50 rounded-full transition-colors"
+                  >
+                    <Edit size={18} />
+                  </button>
+                  <button
+                    onClick={() => deleteAnnouncement(announcement._id)}
+                    className="p-2 text-red-500 hover:bg-red-50 rounded-full transition-colors"
+                  >
+                    <Trash2 size={18} />
+                  </button>
                 </div>
               </div>
-              <div className="flex space-x-2 ml-4">
-                <button
-                  onClick={() => editAnnouncement(announcement)}
-                  className="p-2 text-blue-500 hover:bg-blue-50 rounded-full transition-colors"
-                >
-                  <Edit size={18} />
-                </button>
-                <button
-                  onClick={() => deleteAnnouncement(announcement._id)}
-                  className="p-2 text-red-500 hover:bg-red-50 rounded-full transition-colors"
-                >
-                  <Trash2 size={18} />
-                </button>
-              </div>
+              {announcement.image && (
+                <img
+                  src={announcement.image}
+                  alt={announcement.title}
+                  className="w-full h-48 object-cover rounded-lg mt-4"
+                />
+              )}
             </div>
-            {announcement.image && (
-              <img
-                src={announcement.image}
-                alt={announcement.title}
-                className="w-full h-48 object-cover rounded-lg mt-4"
-              />
-            )}
-          </div>
-        ))}
+          );
+        })}
       </div>
     </div>
   );
