@@ -4,7 +4,6 @@ import {
   X,
   Send,
   Bot,
-  User
 } from 'lucide-react';
 
 const ChatBot = () => {
@@ -12,21 +11,47 @@ const ChatBot = () => {
   const [messages, setMessages] = useState([
     {
       id: 1,
-      text: "Hi! I'm CampusBot 🤖 How can I help you today?",
+      text: "Hi! I'm CampusBot 🤖 How can I help you with announcements or other campus queries?",
       sender: 'bot',
-      time: '2:30 PM'
-    }
+      time: new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' }),
+    },
   ]);
   const [inputMessage, setInputMessage] = useState('');
+  const [isLoading, setIsLoading] = useState(false); // To handle loading state
 
   const quickQuestions = [
     "What are today's announcements?",
     "How to report lost items?", 
     "Check hostel complaint status",
-    "View my timetable"
+    "View my timetable",
   ];
 
-  const handleSendMessage = () => {
+  const getBotResponse = async (message) => {
+    try {
+      setIsLoading(true);
+      const response = await fetch('https://rag-e3px.onrender.com/chat', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({ query: message }),
+      });
+
+      if (!response.ok) {
+        throw new Error('Failed to fetch response from the API');
+      }
+
+      const data = await response.json();
+      return data.response || "Sorry, I couldn't process your request. Please try again.";
+    } catch (error) {
+      console.error('Error fetching bot response:', error);
+      return "Oops, something went wrong! Please try again later.";
+    } finally {
+      setIsLoading(false);
+    }
+  };
+
+  const handleSendMessage = async () => {
     if (!inputMessage.trim()) return;
 
     // Add user message
@@ -34,51 +59,32 @@ const ChatBot = () => {
       id: messages.length + 1,
       text: inputMessage,
       sender: 'user',
-      time: new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })
+      time: new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' }),
     };
 
-    // Simulate bot response
+    setMessages([...messages, userMessage]);
+    setInputMessage('');
+    setIsLoading(true);
+
+    // Get bot response from API
+    const botResponseText = await getBotResponse(inputMessage);
     const botResponse = {
       id: messages.length + 2,
-      text: getBotResponse(inputMessage),
+      text: botResponseText,
       sender: 'bot',
-      time: new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })
+      time: new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' }),
     };
 
-    setMessages([...messages, userMessage, botResponse]);
-    setInputMessage('');
-  };
-
-  const getBotResponse = (message) => {
-    const lowerMessage = message.toLowerCase();
-    
-    if (lowerMessage.includes('announcement')) {
-      return "📢 Today's announcements: Mid-Semester exams postponed, Tech Fest registration open, and Library hours extended. Would you like details on any specific one?";
-    } else if (lowerMessage.includes('lost') || lowerMessage.includes('found')) {
-      return "🔍 To report a lost item, go to Lost & Found section and click 'Report Lost Item'. Include details like item description, last seen location, and your contact info.";
-    } else if (lowerMessage.includes('complaint') || lowerMessage.includes('hostel')) {
-      return "🏠 You can check your complaint status in the Hostel Complaints section. Current average resolution time is 24-48 hours. Need help with a specific complaint?";
-    } else if (lowerMessage.includes('timetable') || lowerMessage.includes('schedule')) {
-      return "📅 Your timetable shows classes from 9:00 AM to 4:30 PM today. You can edit or add new schedules in the Timetable section.";
-    } else if (lowerMessage.includes('hello') || lowerMessage.includes('hi')) {
-      return "Hello! 👋 I'm here to help you navigate CampusLink. Ask me about announcements, lost items, complaints, or your schedule!";
-    } else if (lowerMessage.includes('skill') || lowerMessage.includes('exchange')) {
-      return "🎯 Skill Exchange lets you connect with peers! You can offer to teach skills or request to learn from others. Popular exchanges include coding, design, and language practice.";
-    } else if (lowerMessage.includes('tech news') || lowerMessage.includes('opportunities')) {
-      return "📰 Check out our Tech News section for the latest hackathons, internships, and startup opportunities. We update it daily with relevant opportunities for SECE students!";
-    } else if (lowerMessage.includes('help')) {
-      return "🆘 I can assist you with: \n• Campus announcements & updates\n• Lost & Found items\n• Hostel complaint tracking\n• Timetable management\n• Skill exchange connections\n• Tech opportunities\n\nWhat would you like to explore?";
-    } else {
-      return "I can help you with announcements, lost & found, hostel complaints, timetables, skill exchange, tech opportunities and more. What would you like to know about?";
-    }
+    setMessages((prevMessages) => [...prevMessages, botResponse]);
   };
 
   const handleQuickQuestion = (question) => {
     setInputMessage(question);
+    handleSendMessage(); // Trigger the API call immediately
   };
 
   const handleKeyPress = (e) => {
-    if (e.key === 'Enter') {
+    if (e.key === 'Enter' && !isLoading) {
       handleSendMessage();
     }
   };
@@ -98,14 +104,12 @@ const ChatBot = () => {
             <MessageCircle className="h-6 w-6 group-hover:animate-bounce" />
           )}
           
-          {/* Notification Badge */}
           {!isOpen && (
             <div className="absolute -top-2 -right-2 h-5 w-5 bg-red-500 rounded-full flex items-center justify-center">
               <span className="text-xs font-bold text-white">1</span>
             </div>
           )}
           
-          {/* Pulse Ring */}
           {!isOpen && (
             <div className="absolute inset-0 rounded-full bg-blue-400 animate-ping opacity-20"></div>
           )}
@@ -159,10 +163,17 @@ const ChatBot = () => {
                 </div>
               </div>
             ))}
+            {isLoading && (
+              <div className="flex justify-start">
+                <div className="bg-white text-gray-800 border border-gray-200 rounded-bl-sm shadow-sm px-4 py-2">
+                  <p className="text-sm">Typing...</p>
+                </div>
+              </div>
+            )}
           </div>
 
           {/* Quick Questions */}
-          {messages.length === 1 && (
+          {messages.length === 1 && !isLoading && (
             <div className="px-4 py-2 border-t border-gray-200 bg-white">
               <p className="text-xs text-gray-600 mb-2 font-medium">Quick questions:</p>
               <div className="space-y-1">
@@ -171,6 +182,7 @@ const ChatBot = () => {
                     key={index}
                     onClick={() => handleQuickQuestion(question)}
                     className="w-full text-left text-xs text-blue-600 hover:text-blue-800 hover:bg-blue-50 p-2 rounded-lg transition-colors duration-200 border border-transparent hover:border-blue-200"
+                    disabled={isLoading}
                   >
                     {question}
                   </button>
@@ -187,12 +199,13 @@ const ChatBot = () => {
                 value={inputMessage}
                 onChange={(e) => setInputMessage(e.target.value)}
                 onKeyPress={handleKeyPress}
-                placeholder="Ask me anything..."
+                placeholder="Ask about announcements..."
                 className="flex-1 px-4 py-2 border border-gray-300 rounded-full focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent text-sm"
+                disabled={isLoading}
               />
               <button
                 onClick={handleSendMessage}
-                disabled={!inputMessage.trim()}
+                disabled={!inputMessage.trim() || isLoading}
                 className="bg-blue-600 text-white p-2 rounded-full hover:bg-blue-700 disabled:opacity-50 disabled:cursor-not-allowed transition-colors duration-200 flex-shrink-0"
                 aria-label="Send message"
               >

@@ -443,7 +443,7 @@ const LostAndFoundSection = ({ categories }) => {
                     required
                   >
                     <option value="lost">Lost</option>
-                    <option value="found">Found</option>
+                    {/* <option value="found">Found</option> */}
                   </select>
                 </div>
 

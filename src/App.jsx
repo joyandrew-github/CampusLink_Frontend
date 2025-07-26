@@ -8,7 +8,7 @@ import StudentDashboardPage from './pages/StudentDashboardPage';
 import LoginPage from './pages/LoginPage';
 import AdminDashboardPage from './pages/AdminDashboardPage';
 import AnnouncementPostPage from './pages/AnnouncementPostPage';
-import ChatBot from './components/Home/ChatBot';
+
 
 // ProtectedRoute component to handle authentication and role-based access
 const ProtectedRoute = ({ element, allowedRoles }) => {
@@ -65,7 +65,7 @@ function App() {
           <Route path="/login" element={<LoginPage />} />
           {/* Add more routes as needed */}
         </Routes>
-        <ChatBot />
+        
       </div>
     </Router>
   );
