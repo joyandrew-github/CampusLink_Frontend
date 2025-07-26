@@ -49,7 +49,7 @@ const ComplaintsSection = ({
         if (!token) {
           throw new Error('No authentication token found');
         }
-        const response = await fetch('http://localhost:5000/api/complaints', {
+        const response = await fetch('https://campuslink-backend-7auz.onrender.com/api/complaints', {
           headers: { Authorization: `Bearer ${token}` },
         });
         const data = await response.json();
@@ -82,7 +82,7 @@ const ComplaintsSection = ({
       if (!token) {
         throw new Error('No authentication token found');
       }
-      const response = await fetch('http://localhost:5000/api/complaints', {
+      const response = await fetch('https://campuslink-backend-7auz.onrender.com/api/complaints', {
         method: 'POST',
         headers: { Authorization: `Bearer ${token}`, 'Content-Type': 'application/json' },
         body: JSON.stringify({
@@ -122,7 +122,7 @@ const ComplaintsSection = ({
       if (!token) {
         throw new Error('No authentication token found');
       }
-      const response = await fetch(`http://localhost:5000/api/complaints/${selectedComplaint._id}`, {
+      const response = await fetch(`https://campuslink-backend-7auz.onrender.com/api/complaints/${selectedComplaint._id}`, {
         method: 'PUT',
         headers: { Authorization: `Bearer ${token}`, 'Content-Type': 'application/json' },
         body: JSON.stringify({
@@ -156,7 +156,7 @@ const ComplaintsSection = ({
         if (!token) {
           throw new Error('No authentication token found');
         }
-        const response = await fetch(`http://localhost:5000/api/complaints/${id}`, {
+        const response = await fetch(`https://campuslink-backend-7auz.onrender.com/api/complaints/${id}`, {
           method: 'DELETE',
           headers: { Authorization: `Bearer ${token}` },
         });

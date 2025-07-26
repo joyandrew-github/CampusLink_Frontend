@@ -39,7 +39,7 @@ const AnnouncementPostPage = () => {
       console.log('Announcements - Decoded token:', decodedToken);
 
       try {
-        const response = await fetch('http://localhost:5000/api/announcements', {
+        const response = await fetch('https://campuslink-backend-7auz.onrender.com/api/announcements', {
           headers: { Authorization: `Bearer ${token}` },
         });
         const data = await response.json();

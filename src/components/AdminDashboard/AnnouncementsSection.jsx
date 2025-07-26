@@ -70,7 +70,7 @@ const AnnouncementsSection = ({
           userId: decodedToken?.id,
           userRole: decodedToken?.role,
         });
-        response = await fetch(`http://localhost:5000/api/announcements/${editingAnnouncement._id}`, {
+        response = await fetch(`https://campuslink-backend-7auz.onrender.com/api/announcements/${editingAnnouncement._id}`, {
           method: 'PUT',
           headers: {
             Authorization: `Bearer ${token}`,
@@ -84,7 +84,7 @@ const AnnouncementsSection = ({
           userId: decodedToken?.id,
           userRole: decodedToken?.role,
         });
-        response = await fetch('http://localhost:5000/api/announcements', {
+        response = await fetch('https://campuslink-backend-7auz.onrender.comckend-7auz.onrender.com/api/announcements', {
           method: 'POST',
           headers: {
             Authorization: `Bearer ${token}`,
@@ -182,7 +182,7 @@ const AnnouncementsSection = ({
     console.log('Deleting announcement:', { id, userId: decodedToken?.id, userRole: decodedToken?.role });
 
     try {
-      const response = await fetch(`http://localhost:5000/api/announcements/${id}`, {
+      const response = await fetch(`https://campuslink-backend-7auz.onrender.com/api/announcements/${id}`, {
         method: 'DELETE',
         headers: {
           Authorization: `Bearer ${token}`,

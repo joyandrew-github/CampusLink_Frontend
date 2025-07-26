@@ -39,16 +39,16 @@ const DashboardSection = ({ setActiveSection }) => {
 
       try {
         const [complaintsRes, lostFoundRes, timetableRes, pendingComplaintsRes] = await Promise.all([
-          fetch('http://localhost:5000/api/complaints', {
+          fetch('https://campuslink-backend-7auz.onrender.com/api/complaints', {
             headers: { Authorization: `Bearer ${token}` },
           }),
-          fetch('http://localhost:5000/api/lostfound', {
+          fetch('https://campuslink-backend-7auz.onrender.com/api/lostfound', {
             headers: { Authorization: `Bearer ${token}` },
           }),
-          fetch('http://localhost:5000/api/timetable', {
+          fetch('https://campuslink-backend-7auz.onrender.com/api/timetable', {
             headers: { Authorization: `Bearer ${token}` },
           }),
-          fetch('http://localhost:5000/api/complaints?status=pending', {
+          fetch('https://campuslink-backend-7auz.onrender.com/api/complaints?status=pending', {
             headers: { Authorization: `Bearer ${token}` },
           }),
         ]);

@@ -85,7 +85,7 @@ const Dashboard = () => {
       try {
         const token = localStorage.getItem('token');
         if (!token) throw new Error('No authentication token found');
-        const response = await fetch('http://localhost:5000/api/timetable', {
+        const response = await fetch('https://campuslink-backend-7auz.onrender.com/api/timetable', {
           headers: { Authorization: `Bearer ${token}` },
         });
         const data = await response.json();
@@ -107,7 +107,7 @@ const Dashboard = () => {
       try {
         const token = localStorage.getItem('token');
         if (!token) throw new Error('No authentication token found');
-        const response = await fetch('http://localhost:5000/api/complaints', {
+        const response = await fetch('https://campuslink-backend-7auz.onrender.com/api/complaints', {
           headers: { Authorization: `Bearer ${token}` },
         });
         const data = await response.json();
@@ -127,7 +127,7 @@ const Dashboard = () => {
       try {
         const token = localStorage.getItem('token');
         if (!token) throw new Error('No authentication token found');
-        const response = await fetch('http://localhost:5000/api/lostfound', {
+        const response = await fetch('https://campuslink-backend-7auz.onrender.com/api/lostfound', {
           headers: { Authorization: `Bearer ${token}` },
         });
         const data = await response.json();
@@ -215,7 +215,7 @@ const Dashboard = () => {
 
     try {
       const token = localStorage.getItem('token');
-      const url = selectedItem ? `http://localhost:5000/api/lostfound/${selectedItem._id}` : 'http://localhost:5000/api/lostfound';
+      const url = selectedItem ? `https://campuslink-backend-7auz.onrender.com/api/lostfound/${selectedItem._id}` : 'https://campuslink-backend-7auz.onrender.com/api/lostfound';
       const method = selectedItem ? 'PUT' : 'POST';
 
       const response = await fetch(url, {

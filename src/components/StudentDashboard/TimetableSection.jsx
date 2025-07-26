@@ -181,7 +181,7 @@ const TimetableSection = ({
       }
 
       const response = await fetch(
-        'http://localhost:5000/api/timetable/class',
+        'https://campuslink-backend-7auz.onrender.com/api/timetable/class',
         {
           method: editingTimetable ? 'PUT' : 'POST',
           headers: {
@@ -227,7 +227,7 @@ const TimetableSection = ({
       const token = localStorage.getItem('token');
       if (!token) throw new Error('No authentication token found');
 
-      const response = await fetch('http://localhost:5000/api/timetable/class', {
+      const response = await fetch('https://campuslink-backend-7auz.onrender.com/api/timetable/class', {
         method: 'DELETE',
         headers: {
           Authorization: `Bearer ${token}`,
@@ -270,7 +270,7 @@ const TimetableSection = ({
         const token = localStorage.getItem('token');
         if (!token) throw new Error('No authentication token found');
 
-        const response = await fetch('http://localhost:5000/api/timetable/class/status', {
+        const response = await fetch('https://campuslink-backend-7auz.onrender.com/api/timetable/class/status', {
           method: 'PUT',
           headers: {
             Authorization: `Bearer ${token}`,

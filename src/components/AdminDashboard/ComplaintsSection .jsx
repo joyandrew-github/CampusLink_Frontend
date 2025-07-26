@@ -12,7 +12,7 @@ const ComplaintsSection = ({ complaints, setComplaints, getStatusColor, getPrior
         if (!token) {
           throw new Error('No authentication token found');
         }
-        const response = await fetch('http://localhost:5000/api/complaints', {
+        const response = await fetch('https://campuslink-backend-7auz.onrender.com/api/complaints', {
           headers: { Authorization: `Bearer ${token}` },
         });
         const data = await response.json();
@@ -37,7 +37,7 @@ const ComplaintsSection = ({ complaints, setComplaints, getStatusColor, getPrior
       if (!token) {
         throw new Error('No authentication token found');
       }
-      const response = await fetch(`http://localhost:5000/api/complaints/${id}`, {
+      const response = await fetch(`https://campuslink-backend-7auz.onrender.com/api/complaints/${id}`, {
         method: 'PUT',
         headers: {
           Authorization: `Bearer ${token}`,

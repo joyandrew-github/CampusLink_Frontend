@@ -16,7 +16,7 @@ const Sidebar = ({ activeSection, setActiveSection, sidebarOpen, setSidebarOpen,
         const token = localStorage.getItem('token');
         if (!token) throw new Error('No authentication token found');
 
-        const response = await fetch('http://localhost:5000/api/auth/profile', {
+        const response = await fetch('https://campuslink-backend-7auz.onrender.com/api/auth/profile', {
           headers: {
             Authorization: `Bearer ${token}`,
             'Content-Type': 'application/json',

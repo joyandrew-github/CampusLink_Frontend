@@ -51,7 +51,7 @@ const UsersSection = ({
         if (!token) {
           throw new Error('No authentication token found');
         }
-        const response = await fetch('http://localhost:5000/api/auth/users', {
+        const response = await fetch('https://campuslink-backend-7auz.onrender.com/api/auth/users', {
           headers: { Authorization: `Bearer ${token}` },
         });
         const data = await response.json();
@@ -119,8 +119,8 @@ const UsersSection = ({
       }
 
       const url = editingUser
-        ? `http://localhost:5000/api/auth/users/${editingUser._id}`
-        : 'http://localhost:5000/api/auth/student/register';
+        ? `https://campuslink-backend-7auz.onrender.com/api/auth/users/${editingUser._id}`
+        : 'https://campuslink-backend-7auz.onrender.com/api/auth/student/register';
       const method = editingUser ? 'PUT' : 'POST';
 
       const response = await fetch(url, {
@@ -194,7 +194,7 @@ const UsersSection = ({
         if (!token) {
           throw new Error('No authentication token found');
         }
-        const response = await fetch(`http://localhost:5000/api/auth/users/${id}`, {
+        const response = await fetch(`https://campuslink-backend-7auz.onrender.com/api/auth/users/${id}`, {
           method: 'DELETE',
           headers: { Authorization: `Bearer ${token}` },
         });

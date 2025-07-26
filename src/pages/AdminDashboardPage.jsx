@@ -60,7 +60,7 @@ const AdminDashboardPage = () => {
       try {
         const token = localStorage.getItem('token');
         if (!token) throw new Error('No authentication token found');
-        const response = await fetch('http://localhost:5000/api/announcements', {
+        const response = await fetch('https://campuslink-backend-7auz.onrender.com/api/announcements', {
           headers: { Authorization: `Bearer ${token}` },
         });
         const data = await response.json();
@@ -79,7 +79,7 @@ const AdminDashboardPage = () => {
       try {
         const token = localStorage.getItem('token');
         if (!token) throw new Error('No authentication token found');
-        const response = await fetch('http://localhost:5000/api/users', {
+        const response = await fetch('https://campuslink-backend-7auz.onrender.com/api/users', {
           headers: { Authorization: `Bearer ${token}` },
         });
         const data = await response.json();
@@ -111,7 +111,7 @@ const AdminDashboardPage = () => {
       try {
         const token = localStorage.getItem('token');
         if (!token) throw new Error('No authentication token found');
-        const response = await fetch('http://localhost:5000/api/complaints', {
+        const response = await fetch('https://campuslink-backend-7auz.onrender.com/api/complaints', {
           headers: { Authorization: `Bearer ${token}` },
         });
         const data = await response.json();

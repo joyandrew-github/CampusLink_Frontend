@@ -36,7 +36,7 @@ const LostAndFoundSection = ({ categories }) => {
           sortBy: lostFoundFilter.sortBy,
         }).toString();
         console.log('Fetching with query:', queryParams);
-        const response = await fetch(`http://localhost:5000/api/lostfound?${queryParams}`, {
+        const response = await fetch(`https://campuslink-backend-7auz.onrender.com/api/lostfound?${queryParams}`, {
           headers: { Authorization: `Bearer ${token}` },
         });
         const data = await response.json();
@@ -106,7 +106,7 @@ const LostAndFoundSection = ({ categories }) => {
 
     try {
       const token = localStorage.getItem('token');
-      const url = selectedItem ? `http://localhost:5000/api/lostfound/${selectedItem._id}` : 'http://localhost:5000/api/lostfound';
+      const url = selectedItem ? `https://campuslink-backend-7auz.onrender.com/api/lostfound/${selectedItem._id}` : 'https://campuslink-backend-7auz.onrender.com/api/lostfound';
       const method = selectedItem ? 'PUT' : 'POST';
 
       const response = await fetch(url, {
@@ -136,7 +136,7 @@ const LostAndFoundSection = ({ categories }) => {
     if (window.confirm('Are you sure you want to delete this item?')) {
       try {
         const token = localStorage.getItem('token');
-        const response = await fetch(`http://localhost:5000/api/lostfound/${id}`, {
+        const response = await fetch(`https://campuslink-backend-7auz.onrender.com/api/lostfound/${id}`, {
           method: 'DELETE',
           headers: { Authorization: `Bearer ${token}` },
         });
@@ -159,7 +159,7 @@ const LostAndFoundSection = ({ categories }) => {
       try {
         const token = localStorage.getItem('token');
         const currentUserId = localStorage.getItem('userId');
-        const response = await fetch(`http://localhost:5000/api/lostfound/${id}/found`, {
+        const response = await fetch(`https://campuslink-backend-7auz.onrender.com/api/lostfound/${id}/found`, {
           method: 'PUT',
           headers: {
             Authorization: `Bearer ${token}`,
